@@ -70,5 +70,48 @@
                 <input type="submit" value="Cadastrar">
             </form>
         </div>
+        <div>
+            <?php
+                require_once "../config/conexao.php";
+
+                $sql = "SELECT animal.id, animal.usuario_id, animal.nome, animal.idade, animal.animal, animal.animal_outro, 
+                            animal.raca, animal.sexo, animal.porte, cliente.nome AS dono
+                        FROM animal
+                        JOIN cliente ON animal.usuario_id = cliente.id";
+                $result = $conexao->query($sql);
+            ?>
+
+            <table border="1" cellpadding="8">
+                <tr>
+                    <th>Nome</th>
+                    <th>Idade</th>
+                    <th>Tipo</th>
+                    <th>Raça</th>
+                    <th>Sexo</th>
+                    <th>Porte</th>
+                    <th>Dono</th>
+                    <th>Ações</th>
+                </tr>
+                <?php while ($row = $result->fetch_assoc()): ?>
+                <tr>
+                    <td><?= htmlspecialchars($row['nome']) ?></td>
+                    <td><?= htmlspecialchars($row['idade']) ?></td>
+                    <td><?= $row['animal'] == 'outro' ? htmlspecialchars($row['animal_outro']) : htmlspecialchars($row['animal']) ?></td>
+                    <td><?= htmlspecialchars($row['raca']) ?></td>
+                    <td><?= htmlspecialchars($row['sexo']) ?></td>
+                    <td><?= htmlspecialchars($row['porte']) ?></td>
+                    <td>
+                        <?= htmlspecialchars($row['dono']) ?>
+                        <a href="../cotrollers/detalhes.php?id=<?= $row['usuario_id'] ?>">Detalhes</a>
+                    </td>
+                    <td>
+                        <a href="../cotrollers/editar.php?id=<?= $row['id'] ?>">Editar</a>
+                        <a href="../cotrollers/excluir.php?id=<?= $row['id'] ?>" 
+                        onclick="return confirm('Tem certeza que deseja excluir?')">Excluir</a>
+                    </td>
+                </tr>
+                <?php endwhile; ?>
+            </table>
+        </div>
 </body>
 </html>
